@@ -43,6 +43,7 @@ router.route('/:id/schedules').get(
   }),
 );
 
+//создаст тур
 router.route('/').post(
   catchErrors(async (req, res) => {
     const { id, title, slug, description, isActive, createdAt, updatedAt } = req.body;
@@ -57,6 +58,7 @@ router.route('/').post(
   }),
 );
 
+//обновит тур с заданным :tourId
 router.route('/:id').put(
   catchErrors(async (req, res) => {
     const { id } = req.params;
@@ -72,6 +74,7 @@ router.route('/:id').put(
   }),
 );
 
+//удалит тур с заданным :tourId
 router.route('/:id').delete(
   catchErrors(async (req, res) => {
     const { id } = req.params;
