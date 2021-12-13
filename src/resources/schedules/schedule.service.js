@@ -1,5 +1,5 @@
 const scheduleRepo = require('./schedule.memory.repository');
-const priceRepo = require('../price/price.memory.repository');
+const priceRepo = require('../prices/price.memory.repository');
 
 const getAll = () => scheduleRepo.getAll();
 const getById = (id) => scheduleRepo.getById(id);
