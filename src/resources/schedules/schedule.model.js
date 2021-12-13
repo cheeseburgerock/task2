@@ -1,7 +1,7 @@
 class Schedule {
     constructor({
       id = 'id',
-      productId = 'productId',
+      tourId = 'productId',
       isActive = true,
       startDate = 'None',
       endDate = 'None',
@@ -9,7 +9,7 @@ class Schedule {
       updatedAt = 'None'
     } = {}) {
       this.id = id;
-      this.productId = productId;
+      this.tourId = tourId;
       this.isActive = isActive;
       this.startDate = startDate;
       this.endDate = endDate;
@@ -18,8 +18,8 @@ class Schedule {
     }
   
     static toResponse(schedule) {
-      const { id, ProductId, isActive, startDate, endDate, createdAt, updatedAt } = schedule;
-      return { id, ProductId, isActive, startDate, endDate, createdAt, updatedAt };
+      const { id, tourId, isActive, startDate, endDate, createdAt, updatedAt } = schedule;
+      return { id, tourId, isActive, startDate, endDate, createdAt, updatedAt };
     }
   }
   
