@@ -11,7 +11,7 @@ const router = Router();
 
 // вернет все расписания в системе
 router.route('/').get(
-  catchErrors(async (res: Response) => {
+  catchErrors(async (_req: Request, res: Response) => {
     const schedules = await schedulesService.getAll();
 
     res.json(schedules.map(Schedule.toResponse));

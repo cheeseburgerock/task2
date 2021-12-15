@@ -10,7 +10,7 @@ const router = Router();
 
 // получить все цены в системе
 router.route('/').get(
-  catchErrors(async (res: Response) => {
+  catchErrors(async (_req: Request, res: Response) => {
     const prices = await pricesService.getAll();
 
     res.json(prices.map(Price.toResponse));
