@@ -1,13 +1,17 @@
-const router = require('express').Router();
-const { StatusCodes } = require('http-status-codes');
-const Schedule = require('./schedule.model');
-const schedulesService = require('./schedule.service');
+import { Router, Request, Response } from 'express';
 
-const catchErrors = require('../../common/catchErrors');
+import { StatusCodes } from 'http-status-codes';
+import { Schedule } from './schedule.model';
+import { Price } from '../prices/price.model';
+import * as schedulesService from './schedule.service';
+
+import catchErrors from '../../common/catchErrors';
+
+const router = Router();
 
 // вернет все расписания в системе
 router.route('/').get(
-  catchErrors(async (req, res) => {
+  catchErrors(async (res: Response) => {
     const schedules = await schedulesService.getAll();
 
     res.json(schedules.map(Schedule.toResponse));
@@ -16,10 +20,10 @@ router.route('/').get(
 
 // вернет расписание с заданным :scheduleId
 router.route('/:id').get(
-  catchErrors(async (req, res) => {
+  catchErrors(async (req: Request, res: Response) => {
     const { id } = req.params;
 
-    const schedule = await schedulesService.getById(id);
+    const schedule = await schedulesService.getById(id || '');
 
     if (schedule) {
       res.json(Schedule.toResponse(schedule));
@@ -33,27 +37,32 @@ router.route('/:id').get(
 
 // вернет все цены связанные с расписанием с заданным :scheduleId
 router.route('/:id/schedules').get(
-  catchErrors(async (req, res) => {
+  catchErrors(async (req: Request, res: Response) => {
     const { id } = req.params;
 
-    const schedules = await schedulesService.getPricesById(id);
+    const prices = await schedulesService.getPricesById(id || '');
 
-    if (schedules.length > 0) {
-      res.json(schedules.map(Schedule.toResponse));
+    if (prices) {
+      res.json(Price.toResponse(prices));
     } else {
-      res
-        .status(StatusCodes.NOT_FOUND)
-        .json({ code: 'SCHEDULE_NOT_FOUND', msg: 'Schedule not found' });
+      res.status(StatusCodes.NOT_FOUND).json({ code: 'PRICES_NOT_FOUND', msg: 'Prices not found' });
     }
   }),
 );
 
-// создаст расписание и привяжет его к существующему туру
 router.route('/').post(
-  catchErrors(async (req, res) => {
-    const { id, isActive, startDate, endDate, createdAt, updatedAt } = req.body;
+  catchErrors(async (req: Request, res: Response) => {
+    const { id, tourId, isActive, startDate, endDate, createdAt, updatedAt } = req.body;
 
-    const schedule = await schedulesService.createSchedule({ id, isActive, startDate, endDate, createdAt, updatedAt });
+    const schedule: Schedule = await schedulesService.createSchedule({
+      id,
+      tourId,
+      isActive,
+      startDate,
+      endDate,
+      createdAt,
+      updatedAt,
+    });
 
     if (schedule) {
       res.status(StatusCodes.CREATED).json(Schedule.toResponse(schedule));
@@ -63,14 +72,20 @@ router.route('/').post(
   }),
 );
 
-
-// обновит тур с заданным :tourId
 router.route('/:id').put(
-  catchErrors(async (req, res) => {
+  catchErrors(async (req: Request, res: Response) => {
     const { id } = req.params;
-    const { isActive, startDate, endDate, createdAt, updatedAt } = req.body;
+    const { tourId, isActive, startDate, endDate, createdAt, updatedAt } = req.body;
 
-    const schedule = await schedulesService.updateById({ id, isActive, startDate, endDate, createdAt, updatedAt });
+    const schedule = await schedulesService.updateById({
+      id: id || '',
+      tourId,
+      isActive,
+      startDate,
+      endDate,
+      createdAt,
+      updatedAt,
+    });
 
     if (schedule) {
       res.status(StatusCodes.OK).json(Schedule.toResponse(schedule));
@@ -82,13 +97,11 @@ router.route('/:id').put(
   }),
 );
 
-
-//удалит тур с заданным :tourId
 router.route('/:id').delete(
-  catchErrors(async (req, res) => {
+  catchErrors(async (req: Request, res: Response) => {
     const { id } = req.params;
 
-    const schedule = await schedulesService.deleteById(id);
+    const schedule = await schedulesService.deleteById(id || '');
 
     if (schedule) {
       res
@@ -102,4 +115,4 @@ router.route('/:id').delete(
   }),
 );
 
-module.exports = router;
+export default router;

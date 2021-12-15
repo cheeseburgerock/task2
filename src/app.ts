@@ -1,7 +1,7 @@
-const express = require('express');
-const tourRouter = require('./resources/tours/tour.router');
-const scheduleRouter = require('./resources/schedules/schedule.router');
-const priceRouter = require('./resources/prices/price.router');
+import express from 'express';
+import tourRouter from './resources/tours/tour.router';
+import priceRouter from './resources/prices/price.router';
+import scheduleRouter from './resources/schedules/schedule.router';
 
 const app = express();
 
@@ -21,4 +21,4 @@ app.use('/schedules', scheduleRouter);
 
 app.use('/prices', priceRouter);
 
-module.exports = app;
+export default app;
